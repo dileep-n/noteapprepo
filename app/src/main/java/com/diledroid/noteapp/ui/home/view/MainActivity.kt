@@ -1,14 +1,18 @@
-package com.diledroid.noteapp
+package com.diledroid.noteapp.ui.home.view
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.diledroid.noteapp.R
 import com.diledroid.noteapp.data.model.Note
+import com.diledroid.noteapp.databinding.ActivityAddEditNoteBinding
+import com.diledroid.noteapp.databinding.ActivityMainBinding
 import com.diledroid.noteapp.ui.home.adapter.NoteClickDeleteInterface
 import com.diledroid.noteapp.ui.home.adapter.NoteClickInterface
 import com.diledroid.noteapp.ui.home.adapter.NoteRVAdapter
@@ -20,46 +24,43 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
 
     // on below line we are creating a variable
     // for our recycler view, exit text, button and viewmodel.
-    lateinit var viewModal: NoteViewModal
-    lateinit var notesRV: RecyclerView
-    lateinit var addFAB: FloatingActionButton
+    lateinit var noteViewModal: NoteViewModal
+    lateinit var binding: ActivityMainBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        // on below line we are initializing
-        // all our variables.
-        notesRV = findViewById(R.id.notesRV)
-        addFAB = findViewById(R.id.idFAB)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         // on below line we are setting layout
         // manager to our recycler view.
-        notesRV.layoutManager = LinearLayoutManager(this)
+        binding.notesRV.layoutManager = LinearLayoutManager(this)
 
         // on below line we are initializing our adapter class.
-        val noteRVAdapter = NoteRVAdapter(this, this, this)
+        val noteRVAdapter = NoteRVAdapter(this, this)
 
         // on below line we are setting
         // adapter to our recycler view.
-        notesRV.adapter = noteRVAdapter
+        binding.notesRV.adapter = noteRVAdapter
 
         // on below line we are
         // initializing our view modal.
-        viewModal = ViewModelProvider(
+        noteViewModal = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(NoteViewModal::class.java)
 
         // on below line we are calling all notes method
         // from our view modal class to observer the changes on list.
-        viewModal.allNotes.observe(this, Observer { list ->
+        noteViewModal.allNotes.observe(this, Observer { list ->
             list?.let {
                 // on below line we are updating our list.
                 noteRVAdapter.updateList(it)
             }
         })
-        addFAB.setOnClickListener {
+//        binding.noteViewModel =noteViewModal
+//        binding.lifecycleOwner = this
+        binding.idFAB.setOnClickListener {
             // adding a click listener for fab button
             // and opening a new intent to add a new note.
             val intent = Intent(this@MainActivity, AddEditNoteActivity::class.java)
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
     override fun onDeleteIconClick(note: Note) {
         // in on note click method we are calling delete
         // method from our view modal to delete our not.
-        viewModal.deleteNote(note)
+        noteViewModal.deleteNote(note)
         // displaying a toast message
         Toast.makeText(this, "${note.noteTitle} Deleted", Toast.LENGTH_LONG).show()
     }
