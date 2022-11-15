@@ -2,6 +2,7 @@ package com.diledroid.noteapp.ui.home.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.diledroid.noteapp.data.local.NoteDatabase
 import com.diledroid.noteapp.data.model.Note
@@ -15,6 +16,8 @@ class NoteViewModal (application: Application) :AndroidViewModel(application) {
     // for our all notes list and repository
     val allNotes : LiveData<List<Note>>
     val repository : NoteRepository
+    val noteTitle = MutableLiveData<String>()
+    val noteDesc =MutableLiveData<String>()
 
     // on below line we are initializing
     // our dao, repository and all notes

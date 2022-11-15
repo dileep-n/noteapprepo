@@ -1,6 +1,6 @@
 package com.diledroid.noteapp.ui.home.adapter
 
-import android.content.Context
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +11,9 @@ import com.diledroid.noteapp.R
 import com.diledroid.noteapp.data.model.Note
 
 class NoteRVAdapter(
-    val context: Context,
     val noteClickDeleteInterface: NoteClickDeleteInterface,
     val noteClickInterface: NoteClickInterface
-) :
-    RecyclerView.Adapter<NoteRVAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<NoteRVAdapter.ViewHolder>() {
 
     // on below line we are creating a
     // variable for our all notes list.
@@ -33,8 +31,7 @@ class NoteRVAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // inflating our layout file for each item of recycler view.
         val itemView = LayoutInflater.from(parent.context).inflate(
-            R.layout.note_rv_item,
-            parent, false
+            R.layout.note_rv_item, parent, false
         )
         return ViewHolder(itemView)
     }
