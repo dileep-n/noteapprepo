@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "623555953930",
+    "project_id": "noteapp-9b62f",
+    "storage_bucket": "noteapp-9b62f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:623555953930:android:a69499d87317ed47b5a6f3",
+        "android_client_info": {
+          "package_name": "com.diledroid.noteapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "623555953930-kbj0nev9vu26d8r465ht1isjfmt382ul.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBchZhfFG6kJIUMzgrRrwkwzwCrU-k3-ng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "623555953930-kbj0nev9vu26d8r465ht1isjfmt382ul.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

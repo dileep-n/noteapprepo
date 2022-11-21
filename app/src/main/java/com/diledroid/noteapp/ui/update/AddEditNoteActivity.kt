@@ -6,7 +6,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import com.diledroid.noteapp.ui.home.view.MainActivity
+import com.diledroid.noteapp.MainActivity
+
 import com.diledroid.noteapp.R
 import com.diledroid.noteapp.data.model.Note
 import com.diledroid.noteapp.databinding.ActivityAddEditNoteBinding

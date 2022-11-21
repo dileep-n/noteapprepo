@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.diledroid.noteapp.data.local.NoteDatabase
 import com.diledroid.noteapp.data.model.Note
 import com.diledroid.noteapp.data.repository.NoteRepository
+import com.diledroid.noteapp.utils.ResultOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -45,4 +46,6 @@ class NoteViewModal (application: Application) :AndroidViewModel(application) {
     fun addNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(note)
     }
+
+
 }

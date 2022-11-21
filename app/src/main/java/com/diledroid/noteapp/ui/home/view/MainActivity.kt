@@ -1,24 +1,27 @@
-package com.diledroid.noteapp.ui.home.view
+package com.diledroid.noteapp
+
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.diledroid.noteapp.R
+
 import com.diledroid.noteapp.data.model.Note
-import com.diledroid.noteapp.databinding.ActivityAddEditNoteBinding
 import com.diledroid.noteapp.databinding.ActivityMainBinding
 import com.diledroid.noteapp.ui.home.adapter.NoteClickDeleteInterface
 import com.diledroid.noteapp.ui.home.adapter.NoteClickInterface
 import com.diledroid.noteapp.ui.home.adapter.NoteRVAdapter
 import com.diledroid.noteapp.ui.home.viewmodel.NoteViewModal
+import com.diledroid.noteapp.ui.register.view.RegisterActivity
 import com.diledroid.noteapp.ui.update.AddEditNoteActivity
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+
 
 class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInterface {
 
@@ -26,11 +29,17 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
     // for our recycler view, exit text, button and viewmodel.
     lateinit var noteViewModal: NoteViewModal
     lateinit var binding: ActivityMainBinding
-
+    private var  auth: FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, com.diledroid.noteapp.R.layout.activity_main)
+        // on below line we are
+        // initializing our view modal.
+        noteViewModal = ViewModelProvider(
+            this,
+            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+        ).get(NoteViewModal::class.java)
 
         // on below line we are setting layout
         // manager to our recycler view.
@@ -43,12 +52,6 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
         // adapter to our recycler view.
         binding.notesRV.adapter = noteRVAdapter
 
-        // on below line we are
-        // initializing our view modal.
-        noteViewModal = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-        ).get(NoteViewModal::class.java)
 
         // on below line we are calling all notes method
         // from our view modal class to observer the changes on list.
@@ -69,6 +72,26 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(com.diledroid.noteapp.R.menu.menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.action_logout) {
+            auth = FirebaseAuth.getInstance()
+            auth?.let {authentation ->
+                authentation.signOut()
+                val intent = Intent(this@MainActivity, RegisterActivity::class.java)
+                startActivity(intent)
+                this.finish()
+            }
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
     override fun onNoteClick(note: Note) {
         // opening a new intent and passing a data to it.
         val intent = Intent(this@MainActivity, AddEditNoteActivity::class.java)
@@ -87,4 +110,6 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
         // displaying a toast message
         Toast.makeText(this, "${note.noteTitle} Deleted", Toast.LENGTH_LONG).show()
     }
+
+
 }
