@@ -35,6 +35,8 @@ class NoteRVAdapter(
         }
     }
 
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // inflating our layout file for each item of recycler view.
         binding = NoteRvItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)

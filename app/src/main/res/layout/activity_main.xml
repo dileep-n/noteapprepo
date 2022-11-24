@@ -20,6 +20,18 @@
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
             tools:listitem="@layout/note_rv_item" />
+        <TextView
+            android:id="@+id/no_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:layout_centerInParent="true"
+            android:text="No Result"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:visibility="gone"
+            />
 
         <!--fab for adding a new note-->
         <com.google.android.material.floatingactionbutton.FloatingActionButton

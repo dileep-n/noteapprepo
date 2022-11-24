@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -29,7 +31,10 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
     // for our recycler view, exit text, button and viewmodel.
     lateinit var noteViewModal: NoteViewModal
     lateinit var binding: ActivityMainBinding
-    private var  auth: FirebaseAuth? = null
+    private var auth: FirebaseAuth? = null
+    private lateinit var searchView: SearchView
+    private var backPressedTime:Long = 0
+    lateinit var backToast:Toast
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,8 +42,7 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
         // on below line we are
         // initializing our view modal.
         noteViewModal = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+            this, ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(NoteViewModal::class.java)
 
         // on below line we are setting layout
@@ -61,6 +65,15 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
                 noteRVAdapter.updateList(it)
             }
         })
+
+        noteViewModal.oldFilteredImages.observe(this) {
+            if (it.isEmpty()) {
+                binding.noResult.visibility = View.VISIBLE
+            } else {
+                binding.noResult.visibility = View.GONE
+            }
+            noteRVAdapter.updateList(it)
+        }
 //        binding.noteViewModel =noteViewModal
 //        binding.lifecycleOwner = this
         binding.idFAB.setOnClickListener {
@@ -72,9 +85,12 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
         }
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
-        inflater.inflate(com.diledroid.noteapp.R.menu.menu, menu)
+        inflater.inflate(R.menu.menu, menu)
+        val searchItem = menu?.findItem(R.id.action_search)
+        searchView = searchItem?.actionView as SearchView
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -82,16 +98,33 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
         val id = item.itemId
         if (id == R.id.action_logout) {
             auth = FirebaseAuth.getInstance()
-            auth?.let {authentation ->
+            auth?.let { authentation ->
                 authentation.signOut()
                 val intent = Intent(this@MainActivity, RegisterActivity::class.java)
                 startActivity(intent)
                 this.finish()
             }
+
             return true
         }
+
+        // below line is to call set on query text listener method.
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                // inside on query text change method we are
+                // calling a method to filter our recycler view.
+                noteViewModal.filter(newText)
+                return false
+            }
+        })
+
         return super.onOptionsItemSelected(item)
     }
+
     override fun onNoteClick(note: Note) {
         // opening a new intent and passing a data to it.
         val intent = Intent(this@MainActivity, AddEditNoteActivity::class.java)
@@ -109,6 +142,18 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
         noteViewModal.deleteNote(note)
         // displaying a toast message
         Toast.makeText(this, "${note.noteTitle} Deleted", Toast.LENGTH_LONG).show()
+    }
+
+    override fun onBackPressed() {
+        backToast = Toast.makeText(this, "Press back again to leave the app.", Toast.LENGTH_LONG)
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            backToast.cancel()
+            super.onBackPressed()
+            return
+        } else {
+            backToast.show()
+        }
+        backPressedTime = System.currentTimeMillis()
     }
 
 
