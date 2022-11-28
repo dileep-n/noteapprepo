@@ -19,6 +19,13 @@ class NoteViewModal (application: Application) :AndroidViewModel(application) {
     val repository : NoteRepository
     val noteTitle = MutableLiveData<String>()
     val noteDesc =MutableLiveData<String>()
+    private val filteredList = ArrayList<Note>()
+
+    // this live data observed from home fragment
+    private val _oldFilteredImages: MutableLiveData<ArrayList<Note>> = MutableLiveData()
+    val oldFilteredImages: LiveData<ArrayList<Note>>
+        get() = _oldFilteredImages
+
 
     // on below line we are initializing
     // our dao, repository and all notes
@@ -26,6 +33,11 @@ class NoteViewModal (application: Application) :AndroidViewModel(application) {
         val dao = NoteDatabase.getDatabase(application).getNotesDao()
         repository = NoteRepository(dao)
         allNotes = repository.allNotes
+
+    }
+
+    fun setValueDefault(items: ArrayList<Note>){
+        _oldFilteredImages.postValue(items)
     }
 
     // on below line we are creating a new method for deleting a note. In this we are
@@ -45,6 +57,22 @@ class NoteViewModal (application: Application) :AndroidViewModel(application) {
     // we are calling a method from our repository to add a new note.
     fun addNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(note)
+    }
+
+    // method to filter list based on the search text
+    fun filter(text: String) {
+        filteredList.clear()
+        // running a for loop to compare elements.
+        for (item in allNotes.value!!) {
+            // checking if the entered string matched with any item of our recycler view.
+            if (item.noteTitle.lowercase().contains(text.lowercase())) {
+                // if the item is matched we are
+                // adding it to our filtered list.
+                filteredList.add(item)
+            }
+        }
+        _oldFilteredImages.postValue(filteredList)
+
     }
 
 
