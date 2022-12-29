@@ -59,6 +59,7 @@ class NoteViewModal (application: Application) :AndroidViewModel(application) {
         repository.insert(note)
     }
 
+
     // method to filter list based on the search text
     fun filter(text: String) {
         filteredList.clear()

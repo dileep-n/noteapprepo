@@ -79,7 +79,7 @@ class RegisterFragment : Fragment() {
 
                     is ResultOf.Failure -> {
                         val failedMessage =  it.message ?: "Unknown Error"
-                        Toast.makeText(requireContext(),"Registration failed with $failedMessage",Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), failedMessage,Toast.LENGTH_LONG).show()
                     }
                 }
             }
