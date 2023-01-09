@@ -1,5 +1,8 @@
 package com.diledroid.noteapp.ui.home.viewmodel
+
 import android.app.Application
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,19 +10,24 @@ import androidx.lifecycle.viewModelScope
 import com.diledroid.noteapp.data.local.NoteDatabase
 import com.diledroid.noteapp.data.model.Note
 import com.diledroid.noteapp.data.repository.NoteRepository
-import com.diledroid.noteapp.utils.ResultOf
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class NoteViewModal (application: Application) :AndroidViewModel(application) {
+
+class NoteViewModal(application: Application) : AndroidViewModel(application) {
 
     // on below line we are creating a variable
     // for our all notes list and repository
-    val allNotes : LiveData<List<Note>>
-    val repository : NoteRepository
+    val TAG = "FIRESTORE"
+    val allNotes = MutableLiveData<List<Note>>()
+    var fList: MutableList<Note> = ArrayList()
+    val repository: NoteRepository
     val noteTitle = MutableLiveData<String>()
-    val noteDesc =MutableLiveData<String>()
+    val noteDesc = MutableLiveData<String>()
     private val filteredList = ArrayList<Note>()
+    var db: FirebaseFirestore? = null
 
     // this live data observed from home fragment
     private val _oldFilteredImages: MutableLiveData<ArrayList<Note>> = MutableLiveData()
@@ -30,19 +38,21 @@ class NoteViewModal (application: Application) :AndroidViewModel(application) {
     // on below line we are initializing
     // our dao, repository and all notes
     init {
+        db = FirebaseFirestore.getInstance();
         val dao = NoteDatabase.getDatabase(application).getNotesDao()
         repository = NoteRepository(dao)
-        allNotes = repository.allNotes
+        //allNotes = repository.allNotes
+        readDataFromFirestore()
 
     }
 
-    fun setValueDefault(items: ArrayList<Note>){
+    fun setValueDefault(items: ArrayList<Note>) {
         _oldFilteredImages.postValue(items)
     }
 
     // on below line we are creating a new method for deleting a note. In this we are
     // calling a delete method from our repository to delete our note.
-    fun deleteNote (note: Note) = viewModelScope.launch(Dispatchers.IO) {
+    fun deleteNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
         repository.delete(note)
     }
 
@@ -59,6 +69,18 @@ class NoteViewModal (application: Application) :AndroidViewModel(application) {
         repository.insert(note)
     }
 
+    fun addNoteToFirestore(note: Note) = viewModelScope.launch(Dispatchers.IO) {
+        val dbCourses = db!!.collection("Notes")
+        dbCourses.add(note).addOnSuccessListener {
+            Toast.makeText(getApplication(), "${note.noteTitle} Added", Toast.LENGTH_SHORT).show()
+        }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error adding document $exception")
+                Toast.makeText(getApplication(), "Error adding document$exception", Toast.LENGTH_SHORT).show()
+
+            }
+    }
+
     // method to filter list based on the search text
     fun filter(text: String) {
         filteredList.clear()
@@ -73,6 +95,22 @@ class NoteViewModal (application: Application) :AndroidViewModel(application) {
         }
         _oldFilteredImages.postValue(filteredList)
 
+    }
+
+    fun readDataFromFirestore() {
+        val dbCourses = db!!.collection("Notes")
+        dbCourses
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                querySnapshot.forEach { document ->
+                    Log.d(TAG, "Read document with ID ${document.id}")
+                    fList.add(document.toObject(Note::class.java))
+                }
+                allNotes.postValue(fList)
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents $exception")
+            }
     }
 
 

@@ -69,9 +69,12 @@ class NoteRVAdapter(
         // on below line we are clearing
         // our notes array list
         allNotes.clear()
+        var sortedList = newList.sortedWith(compareBy {
+            it.timeStamp
+        })
         // on below line we are adding a
         // new list to our all notes list.
-        allNotes.addAll(newList)
+        allNotes.addAll(sortedList)
         // on below line we are calling notify data
         // change method to notify our adapter.
         notifyDataSetChanged()

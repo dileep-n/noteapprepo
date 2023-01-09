@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
     private var backPressedTime:Long = 0
     lateinit var backToast:Toast
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, com.diledroid.noteapp.R.layout.activity_main)
@@ -66,7 +67,8 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
             }
         })
 
-        noteViewModal.oldFilteredImages.observe(this) {
+
+            noteViewModal.oldFilteredImages.observe(this) {
             if (it.isEmpty()) {
                 binding.noResult.visibility = View.VISIBLE
             } else {
