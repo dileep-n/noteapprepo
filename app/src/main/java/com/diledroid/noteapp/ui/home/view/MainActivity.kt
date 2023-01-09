@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
     private var backPressedTime:Long = 0
     lateinit var backToast:Toast
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, com.diledroid.noteapp.R.layout.activity_main)
@@ -66,7 +67,8 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
             }
         })
 
-        noteViewModal.oldFilteredImages.observe(this) {
+
+            noteViewModal.oldFilteredImages.observe(this) {
             if (it.isEmpty()) {
                 binding.noResult.visibility = View.VISIBLE
             } else {
@@ -139,9 +141,10 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
     override fun onDeleteIconClick(note: Note) {
         // in on note click method we are calling delete
         // method from our view modal to delete our not.
-        noteViewModal.deleteNote(note)
+        //noteViewModal.deleteNote(note)
+        noteViewModal.deleteFireStoreNote(note)
         // displaying a toast message
-        Toast.makeText(this, "${note.noteTitle} Deleted", Toast.LENGTH_LONG).show()
+
     }
 
     override fun onBackPressed() {

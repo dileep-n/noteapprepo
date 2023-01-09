@@ -92,10 +92,6 @@ class LoginFragment : Fragment() {
                                 startActivity(intent)
                                 it?.finish()
                             }
-                        }else if(it.value.equals("Reset",ignoreCase = true)){
-                            Toast.makeText(requireContext(),"Login failed with ${it.value}",Toast.LENGTH_SHORT).show()
-                        } else{
-                            Toast.makeText(requireContext(),"Login failed with ${it.value}",Toast.LENGTH_SHORT).show()
                         }
                     }
                     is ResultOf.Failure -> {
