@@ -56,12 +56,38 @@ class NoteViewModal(application: Application) : AndroidViewModel(application) {
         repository.delete(note)
     }
 
+    fun deleteFireStoreNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
+        db!!.collection("Notes").document(note.id).delete().addOnSuccessListener {
+            Toast.makeText(getApplication(), "Note deleted", Toast.LENGTH_SHORT).show()
+            readDataFromFirestore()
+        }.addOnFailureListener{
+            exception ->
+            Toast.makeText(getApplication(), "Error deleting note $exception", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
     // on below line we are creating a new method for updating a note. In this we are
     // calling a update method from our repository to update our note.
     fun updateNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
         repository.update(note)
     }
 
+    fun updateFirestoreNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
+
+        db!!.collection("Notes").document(note.id).update("noteTitle",note.noteTitle,
+        "noteDescription",note.noteDescription,
+        "timeStamp",note.timeStamp).addOnSuccessListener {
+
+            Toast.makeText(getApplication(), "Note updated", Toast.LENGTH_SHORT).show()
+
+        }
+            .addOnFailureListener{exception ->
+
+                Toast.makeText(getApplication(), "Error updating document$exception", Toast.LENGTH_SHORT).show()
+
+            }
+    }
 
     // on below line we are creating a new method for adding a new note to our database
     // we are calling a method from our repository to add a new note.
@@ -70,8 +96,8 @@ class NoteViewModal(application: Application) : AndroidViewModel(application) {
     }
 
     fun addNoteToFirestore(note: Note) = viewModelScope.launch(Dispatchers.IO) {
-        val dbCourses = db!!.collection("Notes")
-        dbCourses.add(note).addOnSuccessListener {
+        val dbCourses = db!!.collection("Notes").document(note.id)
+        dbCourses.set(note).addOnSuccessListener {
             Toast.makeText(getApplication(), "${note.noteTitle} Added", Toast.LENGTH_SHORT).show()
         }
             .addOnFailureListener { exception ->
@@ -98,6 +124,7 @@ class NoteViewModal(application: Application) : AndroidViewModel(application) {
     }
 
     fun readDataFromFirestore() {
+        fList.clear()
         val dbCourses = db!!.collection("Notes")
         dbCourses
             .get()

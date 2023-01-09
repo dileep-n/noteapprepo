@@ -141,9 +141,10 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
     override fun onDeleteIconClick(note: Note) {
         // in on note click method we are calling delete
         // method from our view modal to delete our not.
-        noteViewModal.deleteNote(note)
+        //noteViewModal.deleteNote(note)
+        noteViewModal.deleteFireStoreNote(note)
         // displaying a toast message
-        Toast.makeText(this, "${note.noteTitle} Deleted", Toast.LENGTH_LONG).show()
+
     }
 
     override fun onBackPressed() {

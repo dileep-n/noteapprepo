@@ -74,9 +74,9 @@ class AddEditNoteActivity : AppCompatActivity() {
                     val sdf = SimpleDateFormat("dd MMM, yyyy - HH:mm")
                     val currentDateAndTime: String = sdf.format(Date())
                     var updatedNote = Note(noteID,noteTitle, noteDescription, currentDateAndTime)
-                    updatedNote.id = noteID
-                    noteViewModal.updateNote(updatedNote)
-                    Toast.makeText(this, "Note Updated..", Toast.LENGTH_LONG).show()
+                   // noteViewModal.updateNote(updatedNote)
+                    noteViewModal.updateFirestoreNote(updatedNote)
+                    //Toast.makeText(this, "Note Updated..", Toast.LENGTH_LONG).show()
                 }
             } else {
                 if (noteTitle.isNotEmpty() && noteDescription.isNotEmpty()) {
