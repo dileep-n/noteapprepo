@@ -3,6 +3,7 @@ package com.diledroid.noteapp.ui.register.viewmodel
 import androidx.lifecycle.*
 import com.diledroid.noteapp.utils.ResultOf
 import com.google.android.gms.tasks.Task
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineDispatcher
@@ -51,6 +52,10 @@ class RegistrationViewModel (private val dispatcher: CoroutineDispatcher) : View
                 }
 
 
+            }catch (ex:FirebaseNetworkException){
+                loading.postValue(false)
+                _registrationStatus.postValue(ResultOf.Failure("No Internet ${errorCode} ", ex))
+
             }
         }
     }
@@ -80,13 +85,17 @@ class RegistrationViewModel (private val dispatcher: CoroutineDispatcher) : View
 
                 }
 
-            }catch (e:Exception){
+            }catch (ex:FirebaseNetworkException){
+                loading.postValue(false)
+                _signInStatus.postValue(ResultOf.Failure("No Internet ${errorCode} ", ex))
+
+            } catch (e:Exception){
                 e.printStackTrace()
                 loading.postValue(false)
                 if(errorCode != -1){
-                    _registrationStatus.postValue(ResultOf.Failure("Failed with Error Code ${errorCode} ", e))
+                    _signInStatus.postValue(ResultOf.Failure("Failed with Error Code ${errorCode} ", e))
                 }else{
-                    _registrationStatus.postValue(ResultOf.Failure("Failed with Exception ${e.message} ", e))
+                    _signInStatus.postValue(ResultOf.Failure("Failed with Exception ${e.message} ", e))
                 }
 
 

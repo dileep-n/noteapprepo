@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +24,9 @@ import com.diledroid.noteapp.ui.home.adapter.NoteRVAdapter
 import com.diledroid.noteapp.ui.home.viewmodel.NoteViewModal
 import com.diledroid.noteapp.ui.register.view.RegisterActivity
 import com.diledroid.noteapp.ui.update.AddEditNoteActivity
+import com.diledroid.noteapp.utils.LiveDataInternetConnections
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -33,10 +38,11 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
     lateinit var binding: ActivityMainBinding
     private var auth: FirebaseAuth? = null
     private lateinit var searchView: SearchView
-    private var backPressedTime:Long = 0
-    lateinit var backToast:Toast
-
-
+    private var backPressedTime: Long = 0
+    lateinit var backToast: Toast
+    private lateinit var cld : LiveDataInternetConnections
+    lateinit var clmain : RelativeLayout
+    var snackbar:Snackbar? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, com.diledroid.noteapp.R.layout.activity_main)
@@ -68,7 +74,7 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
         })
 
 
-            noteViewModal.oldFilteredImages.observe(this) {
+        noteViewModal.oldFilteredImages.observe(this) {
             if (it.isEmpty()) {
                 binding.noResult.visibility = View.VISIBLE
             } else {
@@ -84,6 +90,25 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
             val intent = Intent(this@MainActivity, AddEditNoteActivity::class.java)
             startActivity(intent)
             this.finish()
+        }
+        clmain = binding.mainLayout
+        cld = LiveDataInternetConnections(application)
+        cld.observe(this) { isConnected ->
+            if (isConnected) {
+                snackbar?.dismiss()
+            } else {
+//                Toast.makeText(this, "not avail", Toast.LENGTH_SHORT).show()
+                // create an instance of the snackbar
+                 snackbar = Snackbar.make(clmain, "Please turn on Internet", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("OK") {
+//                        val snackbar =
+//                            Snackbar.make(clmain, "Message is restored", Snackbar.LENGTH_LONG)
+//                        snackbar.show()
+                    }
+                // call show() method to
+                // display the snackbar
+                snackbar?.show()
+            }
         }
     }
 
@@ -158,6 +183,9 @@ class MainActivity : AppCompatActivity(), NoteClickInterface, NoteClickDeleteInt
         }
         backPressedTime = System.currentTimeMillis()
     }
+
+
+
 
 
 }

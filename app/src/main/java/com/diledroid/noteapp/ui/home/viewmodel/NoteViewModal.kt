@@ -3,14 +3,19 @@ package com.diledroid.noteapp.ui.home.viewmodel
 import android.app.Application
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.diledroid.noteapp.R
 import com.diledroid.noteapp.data.local.NoteDatabase
 import com.diledroid.noteapp.data.model.Note
 import com.diledroid.noteapp.data.repository.NoteRepository
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,6 +34,7 @@ class NoteViewModal(application: Application) : AndroidViewModel(application) {
     private val filteredList = ArrayList<Note>()
     var db: FirebaseFirestore? = null
 
+
     // this live data observed from home fragment
     private val _oldFilteredImages: MutableLiveData<ArrayList<Note>> = MutableLiveData()
     val oldFilteredImages: LiveData<ArrayList<Note>>
@@ -39,6 +45,11 @@ class NoteViewModal(application: Application) : AndroidViewModel(application) {
     // our dao, repository and all notes
     init {
         db = FirebaseFirestore.getInstance();
+        val settings = FirebaseFirestoreSettings.Builder()
+            .setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
+            .setPersistenceEnabled(true)
+            .build()
+        db!!.firestoreSettings = settings
         val dao = NoteDatabase.getDatabase(application).getNotesDao()
         repository = NoteRepository(dao)
         //allNotes = repository.allNotes
@@ -139,6 +150,7 @@ class NoteViewModal(application: Application) : AndroidViewModel(application) {
                 Log.w(TAG, "Error getting documents $exception")
             }
     }
+
 
 
 }
