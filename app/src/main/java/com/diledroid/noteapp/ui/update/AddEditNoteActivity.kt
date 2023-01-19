@@ -74,7 +74,7 @@ class AddEditNoteActivity : AppCompatActivity() {
                     val sdf = SimpleDateFormat("dd MMM, yyyy - HH:mm")
                     val currentDateAndTime: String = sdf.format(Date())
                     var updatedNote = Note(noteID,noteTitle, noteDescription, currentDateAndTime)
-                   // noteViewModal.updateNote(updatedNote)
+                   noteViewModal.updateNote(updatedNote)
                     noteViewModal.updateFirestoreNote(updatedNote)
                     //Toast.makeText(this, "Note Updated..", Toast.LENGTH_LONG).show()
                 }
@@ -84,7 +84,7 @@ class AddEditNoteActivity : AppCompatActivity() {
                     val currentDateAndTime: String = sdf.format(Date())
                     // if the string is not empty we are calling a
                     // add note method to add data to our room database.
-                    //noteViewModal.addNote(Note(uniqueId,noteTitle, noteDescription, currentDateAndTime))
+                    noteViewModal.addNote(Note(uniqueId,noteTitle, noteDescription, currentDateAndTime))
                     noteViewModal.addNoteToFirestore(Note(uniqueId,noteTitle, noteDescription, currentDateAndTime))
                     //Toast.makeText(this, "$noteTitle Added", Toast.LENGTH_LONG).show()
                 }

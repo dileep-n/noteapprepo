@@ -137,4 +137,8 @@ class RegistrationViewModel (private val dispatcher: CoroutineDispatcher) : View
 
     fun fetchLoading():LiveData<Boolean> = loading
 
+    fun checkTest(email:String, password:String) : Boolean{
+        return  true
+    }
+
 }

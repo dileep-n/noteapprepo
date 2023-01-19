@@ -34,7 +34,7 @@ class LoginFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentLoginBinding
-    private lateinit var  registerViewModel: RegistrationViewModel
+    private lateinit var registerViewModel: RegistrationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,17 +45,16 @@ class LoginFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentLoginBinding.inflate(inflater,container,false)
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        registerViewModel =  (activity as RegisterActivity).fetchRegisterViewModel()
+        registerViewModel = (activity as RegisterActivity).fetchRegisterViewModel()
         //   initViewModel()
         observerLoadingProgress()
         // observeSignIn()
@@ -64,28 +63,30 @@ class LoginFragment : Fragment() {
         }
 
         binding.loginBtn.setOnClickListener {
-            if(TextUtils.isEmpty(binding.loginEmail.text.toString()) || TextUtils.isEmpty(binding.loginPwd.text.toString())){
-                Toast.makeText(requireContext(),"Login fields can't be empty", Toast.LENGTH_LONG).show()
-            }else{
-                signIn(binding.loginEmail.text.toString(),binding.loginPwd.text.toString())
+            if (LoginUtil.validateLoginInput(binding.loginEmail.text.toString(), binding.loginPwd.text.toString())) {
+                signIn(binding.loginEmail.text.toString(), binding.loginPwd.text.toString())
+            } else {
+                Toast.makeText(requireContext(), "Login fields values are invalid", Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
 
 
-    private fun signIn(email:String, pwd:String){
-        registerViewModel.signIn(email,pwd)
+    private fun signIn(email: String, pwd: String) {
         observeSignIn()
+        registerViewModel.signIn(email, pwd)
+
     }
 
 
-    private fun observeSignIn(){
-        registerViewModel.signInStatus.observe(viewLifecycleOwner, Observer {result->
+    private fun observeSignIn() {
+        registerViewModel.signInStatus.observe(viewLifecycleOwner, Observer { result ->
             result?.let {
-                when(it){
-                    is ResultOf.Success ->{
-                        if(it.value.equals("Login Successful",ignoreCase = true)){
-                           // Toast.makeText(requireContext(),"Login Successful",Toast.LENGTH_LONG).show()
+                when (it) {
+                    is ResultOf.Success -> {
+                        if (it.value.equals("Login Successful", ignoreCase = true)) {
+                            // Toast.makeText(requireContext(),"Login Successful",Toast.LENGTH_LONG).show()
                             registerViewModel.resetSignInLiveData()
                             activity.let {
                                 val intent = Intent(it, MainActivity::class.java)
@@ -95,8 +96,10 @@ class LoginFragment : Fragment() {
                         }
                     }
                     is ResultOf.Failure -> {
-                        val failedMessage =  it.message ?: "Unknown Error"
-                        Toast.makeText(requireContext(),"Login failed with $failedMessage",Toast.LENGTH_SHORT).show()
+                        val failedMessage = it.message ?: "Unknown Error"
+                        Toast.makeText(
+                            requireContext(), "Login failed with $failedMessage", Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
@@ -105,12 +108,12 @@ class LoginFragment : Fragment() {
 
     }
 
-    private fun observerLoadingProgress(){
+    private fun observerLoadingProgress() {
         registerViewModel.fetchLoading().observe(viewLifecycleOwner, Observer {
             if (!it) {
                 println(it)
                 binding.loginProgress.visibility = View.GONE
-            }else{
+            } else {
                 binding.loginProgress.visibility = View.VISIBLE
             }
 

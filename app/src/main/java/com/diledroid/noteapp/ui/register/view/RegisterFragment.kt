@@ -42,14 +42,14 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.registerBtn.setOnClickListener {
-            if(TextUtils.isEmpty(binding.editTextTextEmailAddress.text.toString()) ||
-                TextUtils.isEmpty(binding.editTextTextPassword.text.toString())
-                || TextUtils.isEmpty(binding.editTextTextPassword2.text.toString())){
-                Toast.makeText(requireContext(),"Input Fields cannot be Empty", Toast.LENGTH_LONG).show()
-            }else if(binding.editTextTextPassword.text.toString() != binding.editTextTextPassword2.text.toString()){
-                Toast.makeText(requireContext(),"Passwords don't match", Toast.LENGTH_LONG).show()
-            }else{
+
+            if(RegistrationUtil.validateRegistrationInput(binding.editTextTextEmailAddress.text.toString(),
+                    binding.editTextTextPassword.text.toString(),
+                    binding.editTextTextPassword2.text.toString())){
                 doRegistration()
+            }else{
+                Toast.makeText(requireContext(),"Input Fields are invalid", Toast.LENGTH_LONG).show()
+
             }
 
 
