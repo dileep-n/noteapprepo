@@ -13,6 +13,12 @@
         android:background="@color/black_shade_1"
         tools:context=".ui.register.view.RegisterFragment">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintGuide_percent="0.20"
+            android:orientation="horizontal" />
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
@@ -20,9 +26,9 @@
             android:layout_marginTop="48dp"
             android:src="@mipmap/ic_launcher"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.526"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="@+id/guideline" />
 
         <EditText
             android:id="@+id/editTextTextEmailAddress"
