@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "623555953930-q7pndm7t2bq897ir6pkk97enur9fvo10.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.diledroid.noteapp",
+            "certificate_hash": "f68465b34257b263fb362c68d0e9ea5f1edc21ca"
+          }
+        },
+        {
           "client_id": "623555953930-kbj0nev9vu26d8r465ht1isjfmt382ul.apps.googleusercontent.com",
           "client_type": 3
         }

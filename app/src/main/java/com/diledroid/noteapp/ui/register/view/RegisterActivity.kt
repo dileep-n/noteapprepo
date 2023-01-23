@@ -2,6 +2,7 @@ package com.diledroid.noteapp.ui.register.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.diledroid.noteapp.R
@@ -22,7 +23,8 @@ class RegisterActivity : AppCompatActivity() {
 
         var fireBaseViewModelFactory = RegistrationViewModelFactory()
         registrationViewModel = ViewModelProvider(this,fireBaseViewModelFactory).get(RegistrationViewModel::class.java)
-
+        val appSignatureHelper = AppSignatureHelper(this)
+        Log.v("RegisterActivityKey", appSignatureHelper.appSignatures[0])
     }
 
     internal fun  fetchRegisterViewModel() = registrationViewModel

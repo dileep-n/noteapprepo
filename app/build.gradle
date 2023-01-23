@@ -45,6 +45,8 @@ android {
 dependencies {
     implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
     implementation "androidx.activity:activity-ktx:$rootProject.activityVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.20"
+    implementation 'androidx.core:core-ktx:1.2.0'
 
     // Room components
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"
